@@ -4,18 +4,20 @@ const textos = document.querySelectorAll(".aba-conteudo");
 const contadores = document.querySelectorAll(".contador");
 
 // 2. LÓGICA DAS ABAS (Mudar de aba ao clicar)
-for (let i = 0; i < botoes.length; i++) {
-    botoes[i].onclick = function () {
-        // Remove a classe "ativo" de todos antes de aplicar no novo
-        for (let j = 0; j < botoes.length; j++) {
-            botoes[j].classList.remove("ativo");
-            textos[j].classList.remove("ativo");
-        }
-        // Ativa o botão e o texto correspondente ao índice clicado
-        botoes[i].classList.add("ativo");
-        textos[i].classList.add("ativo");
-    };
-}
+botoes.forEach((botao, indice) => {
+    botao.addEventListener("click", () => {
+        // Encontra quem está ativo no momento e remove a classe (mais eficiente do que varrer todos)
+        const botaoAtivo = document.querySelector(".botao.ativo");
+        const textoAtivo = document.querySelector(".aba-conteudo.ativo");
+
+        if (botaoAtivo) botaoAtivo.classList.remove("ativo");
+        if (textoAtivo) textoAtivo.classList.remove("ativo");
+
+        // Adiciona a classe 'ativo' no botão clicado e na aba correspondente
+        botao.classList.add("ativo");
+        textos[indice].classList.add("ativo");
+    });
+});
 
 // 3. LÓGICA DO CONTADOR
 // Datas de prazo para os 4 objetivos (ajustadas para 2026)
@@ -27,33 +29,31 @@ const tempos = [
 ];
 
 function calculaTempo(tempoObjetivo) {
-    let tempoAtual = new Date();
-    let tempoFinal = tempoObjetivo - tempoAtual;
+    const tempoAtual = new Date();
+    const tempoFinal = tempoObjetivo - tempoAtual;
 
     // Se o prazo já passou
     if (tempoFinal < 0) {
         return "Prazo Encerrado";
     }
 
-    // Cálculos matemáticos
-    let segundos = Math.floor(tempoFinal / 1000);
-    let minutos = Math.floor(segundos / 60);
-    let horas = Math.floor(minutos / 60);
-    let dias = Math.floor(horas / 24);
+    // Cálculos matemáticos simplificados direto na declaração
+    const segundos = Math.floor((tempoFinal / 1000) % 60);
+    const minutos = Math.floor((tempoFinal / 1000 / 60) % 60);
+    const horas = Math.floor((tempoFinal / (1000 * 60 * 60)) % 24);
+    const dias = Math.floor(tempoFinal / (1000 * 60 * 60 * 24));
 
-    // Ajuste do resto para não ultrapassar 60 (seg/min) ou 24 (horas)
-    segundos %= 60;
-    minutos %= 60;
-    horas %= 24;
+    // Formata os números para sempre terem duas casas (ex: "09" em vez de "9")
+    const formataNumero = (numero) => String(numero).padStart(2, '0');
 
-    return `${dias} dias ${horas} horas ${minutos} minutos ${segundos} segundos`;
+    return `${dias} dias ${formataNumero(horas)} horas ${formataNumero(minutos)} minutos ${formataNumero(segundos)} segundos`;
 }
 
 // Função que atualiza todos os contadores na tela
 function atualizaCronometro() {
-    for (let i = 0; i < contadores.length; i++) {
-        contadores[i].textContent = calculaTempo(tempos[i]);
-    }
+    contadores.forEach((contador, indice) => {
+        contador.textContent = calculaTempo(tempos[indice]);
+    });
 }
 
 // Inicia o cronômetro e faz ele atualizar a cada 1 segundo (1000ms)
