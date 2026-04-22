@@ -9,12 +9,17 @@
   --texto-fundo: rgba(58, 55, 94, 0.3);
 }
 
-/* Configurações Gerais */
+/* Reset Global e Configurações Gerais */
+*, *::before, *::after {
+  box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background-color: var(--cor-de-fundo);
   color: var(--branco);
   font-family: "Chakra Petch", sans-serif;
-  margin: 0;
   padding: 20px;
 }
 
@@ -32,6 +37,7 @@ body {
   text-align: left;
   width: 100%;
   font-size: 32px;
+  margin-bottom: 20px;
 }
 
 .titulo-principal span {
@@ -39,13 +45,18 @@ body {
 }
 
 /* Estrutura dos Botões */
+.conteudo {
+  width: 100%;
+}
+
 .botoes {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
 
 .botao {
-  font-family: "Chakra Petch", sans-serif; 
+  font-family: inherit; 
   background-color: var(--botao-inativo);
   color: var(--branco);
   display: flex;
@@ -59,17 +70,30 @@ body {
   border-right: 2px solid var(--botao-ativo);
   border-top: none;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Acessibilidade e Interação Visual */
+.botao:hover {
+  background-color: var(--botao-ativo);
+  opacity: 0.8;
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--verde);
+  outline-offset: 2px;
 }
 
 .botao:first-child {
   border-radius: 40px 40px 0 0;
+  border-top: 2px solid var(--botao-ativo); 
 }
 
 /* Lógica de Ativação do Botão */
 .botao.ativo {
   background-color: var(--botao-ativo);
   border-bottom: 4px solid var(--verde);
+  opacity: 1; 
 }
 
 /* Conteúdo das Abas */
@@ -78,27 +102,35 @@ body {
   padding: 40px;
   border-radius: 0 0 40px 40px;
   width: 100%;
-  box-sizing: border-box; 
 }
 
 .aba-conteudo {
-  display: none; /* Escondido por padrão */
+  display: none; 
 }
 
 .aba-conteudo.ativo {
-  display: block; /* Mostra quando ativo via JS */
+  display: block; 
+  animation: fade-in 0.4s ease-in-out;
+}
+
+/* Animação suave para as abas */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Estilização Interna das Abas */
 .aba-conteudo-titulo-principal {
   font-size: 28px;
   text-align: center;
+  margin-bottom: 15px;
 }
 
 .aba-conteudo-titulo-secundario {
   text-align: center;
   color: var(--verde);
   text-transform: uppercase;
+  font-size: 16px;
 }
 
 .contador {
@@ -111,7 +143,12 @@ body {
 /* Responsividade (Desktop) */
 @media screen and (min-width: 768px) {
   .botoes {
-    display: flex;
+    flex-direction: row; 
+  }
+
+  .botao {
+    flex: 1; 
+    border-top: 2px solid var(--botao-ativo);
   }
 
   .botao:first-child {
@@ -120,9 +157,5 @@ body {
   
   .botao:last-child {
     border-radius: 0 40px 0 0;
-  }
-
-  .botao {
-    border-top: 2px solid var(--botao-ativo);
   }
 }
